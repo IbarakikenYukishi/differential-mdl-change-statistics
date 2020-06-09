@@ -11,7 +11,7 @@
 1. Download the data from the link below:
 https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 
-2. Rename the file `covid_data.csv` and put it in `./data/covid_data.csv`.
+2. Rename the file to `covid_data.csv` and put it in `./data/covid_data.csv`.
 
 ### RUN
 Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Exponential.ipynb`.
