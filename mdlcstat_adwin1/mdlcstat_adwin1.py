@@ -13,7 +13,7 @@ class batch:
     parameters:
         lossfunc: encoding function.
         d: dimentionality of parameter. For Gaussian distribution, d=2.
-        alpha: 'log' of upper-bound of error probability for 1st and 2nd D-MDL.
+        alpha: upper-bound of error probability for 1st and 2nd D-MDL.
         delta: parameter for asymptotic reliability.
         how_to_drop: 'cutpoint' or 'all'.
         preprocess: to encode data with linear regression (True) or not (False). 
@@ -92,7 +92,7 @@ class online:
     parameters:
         lossfunc: encoding function.
         d: dimentionality of parameter. For Gaussian distribution, d=2.
-        alpha: 'log' of upper-bound of error probability for 1st and 2nd D-MDL.
+        alpha: upper-bound of error probability for 1st and 2nd D-MDL.
         delta: parameter for asymptotic reliability.
         how_to_drop: 'cutpoint' or 'all'.
         preprocess: to encode data with linear regression (True) or not (False). 
@@ -152,7 +152,7 @@ def calculate_threshold(delta, d, nn, alpha, n, order=0, complexity=None):
         delta: the hyperparameter for asymptotic reliability
         d: dimention of parameter
         nn: the number of possible cutpoints
-        alpha: log of the upper-bound of error probability for 1st and 2nd D-MDL
+        alpha: upper-bound of error probability for 1st and 2nd D-MDL
         n: the number of data within the window
         order: 0th, 1st, or 2nd
         complexity(optional): the function for calculating stochastic complexity. If None,
@@ -168,22 +168,17 @@ def calculate_threshold(delta, d, nn, alpha, n, order=0, complexity=None):
             threshold = np.log(1 / delta) + (2 + delta) * \
                 np.log(nn) + complexity(n)
     else:
-        #        threshold = np.log(nn) - np.log(alpha) + (d / 2) * \
-        #            np.log(t) + (d / 2) * np.log(n - t)
         if complexity == None:
-            #threshold = np.log(nn) - np.log(alpha) + d * np.log(n / 2)
             if order == 1:
-                threshold = np.log(nn) - alpha + d * np.log(n / 2)
+                threshold = d * np.log(n / 2) - np.log(alpha)
             else:
-                threshold = 2 * (np.log(nn) - alpha + d * np.log(n / 2))
+                threshold = 2 * (d * np.log(n / 2) - np.log(alpha))
 
         else:
             if order == 1:
-                threshold = np.log(nn) - alpha + 2 * complexity(n / 2)
+                threshold = 2 * complexity(n / 2) - np.log(alpha)
             else:
-                threshold = 2 * (np.log(nn) - alpha + 2 * complexity(n / 2))
-
-            #threshold = np.log(nn) - np.log(alpha) + 2 * complexity(n / 2)
+                threshold = 2 * (2 * complexity(n / 2) - np.log(alpha))
 
     return threshold
 
@@ -234,7 +229,7 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
         lossfunc: encoding function.
         X: data within the window
         d: dimentionality of parameter. For Gaussian distribution, d=2.
-        alpha: 'log' of upper-bound of error probability for 1st and 2nd D-MDL.
+        alpha: upper-bound of error probability for 1st and 2nd D-MDL.
         delta: parameter for asymptotic reliability.
         preprocess: to encode data with linear regression (True) or not (False). 
         complexity: complexity of encoding function.
@@ -332,7 +327,7 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
         alarm_1 = 0
         alarm_2 = 0
 
-        # calculate 0th MDL change statistics at each time point        
+        # calculate 0th MDL change statistics at each time point
         for cut in range(1, n):
             # calculate residual errors
             res_total = calculate_residual(Xmat)
@@ -356,21 +351,23 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
             MDL_1 = np.nan
         else:
             for cut in range(1, n - 1):
-                # calculate residual errors and 1st MDL change statistics at time point t
+                # calculate residual errors and 1st MDL change statistics at
+                # time point t
                 res_1 = calculate_residual(Xmat[:cut])
                 res_2 = calculate_residual(Xmat[cut:])
                 L_first = lossfunc(res_1, np.sum(res_1).reshape((1, 1)), np.var(res_1)) + \
                     lossfunc(res_2, np.sum(res_2).reshape(
                         (1, 1)), np.var(res_2))
 
-                # calculate residual errors and 1st MDL change statistics at time point t+1
+                # calculate residual errors and 1st MDL change statistics at
+                # time point t+1
                 res_1 = calculate_residual(Xmat[:cut + 1])
                 res_2 = calculate_residual(Xmat[cut + 1:])
                 L_second = lossfunc(res_1, np.sum(res_1).reshape((1, 1)), np.var(res_1)) + \
                     lossfunc(res_2, np.sum(res_2).reshape(
                         (1, 1)), np.var(res_2))
 
-                #calculate 1st MDL change statistics
+                # calculate 1st MDL change statistics
                 stat_1 = L_first - L_second
                 if stat_1 > calculate_threshold(delta=delta, d=d, nn=n - 2, alpha=alpha, n=n, order=1, complexity=complexity):
                     alarm_1 = 1
@@ -382,28 +379,31 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
             MDL_2 = np.nan
         else:
             for cut in range(2, n - 1):
-                 # calculate residual errors and 1st MDL change statistics at time point t
+                 # calculate residual errors and 1st MDL change statistics at
+                 # time point t
                 res_1 = calculate_residual(Xmat[:cut])
                 res_2 = calculate_residual(Xmat[cut:])
                 L_t = lossfunc(res_1, np.sum(res_1).reshape((1, 1)), np.var(res_1)) + \
                     lossfunc(res_2, np.sum(res_2).reshape(
                         (1, 1)), np.var(res_2))
 
-                # calculate residual errors and 1st MDL change statistics at time point t+1
+                # calculate residual errors and 1st MDL change statistics at
+                # time point t+1
                 res_1 = calculate_residual(Xmat[:cut + 1])
                 res_2 = calculate_residual(Xmat[cut + 1:])
                 L_tp = lossfunc(res_1, np.sum(res_1).reshape((1, 1)), np.var(res_1)) + \
                     lossfunc(res_2, np.sum(res_2).reshape(
                         (1, 1)), np.var(res_2))
 
-                # calculate residual errors and 1st MDL change statistics at time point t-1
+                # calculate residual errors and 1st MDL change statistics at
+                # time point t-1
                 res_1 = calculate_residual(Xmat[:cut - 1])
                 res_2 = calculate_residual(Xmat[cut - 1:])
                 L_tm = lossfunc(res_1, np.sum(res_1).reshape((1, 1)), np.var(res_1)) + \
                     lossfunc(res_2, np.sum(res_2).reshape(
                         (1, 1)), np.var(res_2))
 
-                # calculate 2nd MDL change statistics 
+                # calculate 2nd MDL change statistics
                 stat_2 = 2 * L_t - (L_tp + L_tm)
 
                 if stat_2 > calculate_threshold(delta=delta, d=d, nn=n - 3, alpha=alpha, n=n, order=2, complexity=complexity):
