@@ -14,11 +14,14 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 2. Rename the file to `covid_data.csv` and put it in `./data/covid_data.csv`.
 
 ### RUN
-Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Exponential.ipynb`.
+Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Exponential.ipynb` for the exponential modeling
+Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Gaussian.ipynb` for the Gaussian modeling
 
 ## 3. Author & Mail address
 - Ryo Yuki
 - ryo_yuki@mist.i.u-tokyo.ac.jp
+- Linchuan Xu
+- linchuan_xu@mist.i.u-tokyo.ac.jp
 
 ## 4. Requirements & License
 ### Requirements
