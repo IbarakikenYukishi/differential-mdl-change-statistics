@@ -1,4 +1,4 @@
-# Differential MDL Change Statistics for Hierarchical Algorithm.
+# Differential MDL Change Statistics for Hierarchical Detection Algorithm.
 
 ## 1. Environment
 - CPU: 2.7 GHz Intel Core i5
