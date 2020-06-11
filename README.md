@@ -16,10 +16,12 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 ### RUN
 - Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Exponential.ipynb` for the exponential modeling
 - Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Gaussian.ipynb` for the Gaussian modeling
+- Run the jupyter file at `./jupyter/synthetic/synthetic_{abrupt,gradual}_{mean,variance}.ipynb` for the synthetic datasets
 
 ## 3. Author & Mail address
 - Ryo Yuki (ryo_yuki@mist.i.u-tokyo.ac.jp)
 - Linchuan Xu (linchuan_xu@mist.i.u-tokyo.ac.jp)
+- Shintaro Fukushima (shintaro_fukushima@mist.i.u-tokyo.ac.jp)
 
 ## 4. Requirements & License
 ### Requirements
