@@ -28,8 +28,10 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 - numpy==1.15.0
 - scipy==1.3.1
 
+### License
+This code is licensed under MIT License.
+
 ## 5. Reference
 Kenji Yamanishi, Linchuan Xu, Ryo Yuki, Shintaro Fukushima, and Chuan-hao Lin. Change Sign Detection with Differential MDL Change Statistics and Its Applications to COVID-19 Pandemic Analysis. (in preparation).
 
-## 6. License
-This code is licensed under MIT License.
+
