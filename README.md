@@ -33,13 +33,13 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 - numpy==1.15.0
 - scipy==1.3.1
 
+### License
+This code is licensed under MIT License.
+
 ## 6. Note
 For the calculation of the code length in the exponential modeling, we used the conditional normalized maximum likelihood (CNML) code length of Gaussian distributions [2,3,4] for residual errors.
 
-## 7. License
-This code is licensed under MIT License.
-
-## 8. Reference
+## 7. Reference
 1. Yamanishi, K., Xu, L., Yuki, R., Fukushima, S., & Lin, C. H. (2020). Change Sign Detection with Differential MDL Change Statistics and its Applications to COVID-19 Pandemic Analysis. arXiv preprint arXiv:2007.15179.
 2. Grünwald, P. D., & Grunwald, A. (2007). The minimum description length principle. MIT press.
 3. Miyaguchi, K. (2017). Normalized Maximum Likelihood with Luckiness for Multivariate Normal Distributions. arXiv preprint arXiv:1708.01861.
