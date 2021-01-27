@@ -1,4 +1,4 @@
-# Differential MDL Change Statistics for Hierarchical Detection Algorithm.
+# Differential MDL Change Statistics
 
 ## 1. About
 This repository contains the implementation code of differential MDL change statistics (D-MDL) [1].
@@ -34,7 +34,7 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 - scipy==1.3.1
 
 ## 6. Note
-For the calculation of the code length in the exponential modeling, we used the conditional NML (CNML) code length of Gaussian distributions [2,3,4] for residual errors.
+For the calculation of the code length in the exponential modeling, we used the conditional normalized maximum likelihood (CNML) code length of Gaussian distributions [2,3,4] for residual errors.
 
 ## 7. License
 This code is licensed under MIT License.
