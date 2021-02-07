@@ -126,10 +126,17 @@ class online:
             self.lossfunc, list_window, delta=self.delta, d=self.d, alpha=self.alpha, preprocess=self.preprocess, complexity=self.complexity)
         i = len(MDL_0) - 1
         nn = len(list_window)
-        while MDL_0[i] <= calculate_threshold(delta=self.delta, d=self.d, nn=nn - 1, alpha=self.alpha, n=nn, order=0, complexity=self.complexity):
-            i = i - 1
-            if i < 0:
-                break
+        #print(MDL_0)
+        #print(calculate_threshold(delta=self.delta, d=self.d, nn=nn - 13, alpha=self.alpha, n=nn, order=0, complexity=self.complexity))
+
+        if nn>=10:
+            #print(calculate_threshold(delta=self.delta, d=self.d, nn=nn - 5, alpha=self.alpha, n=nn, order=0, complexity=self.complexity))
+            while MDL_0[i] <= calculate_threshold(delta=self.delta, d=self.d, nn=nn - 9, alpha=self.alpha, n=nn, order=0, complexity=self.complexity):
+                i = i - 1
+                if i < 0:
+                    break
+        else:
+            i=-1
         cut = i
         if cut != -1:
             if self.how_to_drop == 'cutpoint':
@@ -161,6 +168,16 @@ def calculate_threshold(delta, d, nn, alpha, n, order=0, complexity=None):
     returns:
         threshold
     """
+    if order == 0:
+        threshold = np.log(1 / delta) + (d / 2 + 1 + delta) * np.log(n) + np.log(nn)
+    elif order == 1:
+        threshold = d * np.log(n / 2) - np.log(alpha)
+    else:
+        threshold = 2 * (d * np.log(n / 2) - np.log(alpha))
+    #print(order)
+    #print(threshold)
+
+    '''
     if order == 0:  # 0th order MDL change statistics. This fulfills the asymptotic reliability.
         if complexity == None:
             threshold = np.log(1 / delta) + (d / 2 + 2 + delta) * np.log(nn)
@@ -179,7 +196,7 @@ def calculate_threshold(delta, d, nn, alpha, n, order=0, complexity=None):
                 threshold = 2 * complexity(n / 2) - np.log(alpha)
             else:
                 threshold = 2 * (2 * complexity(n / 2) - np.log(alpha))
-
+    '''
     return threshold
 
 
@@ -209,7 +226,14 @@ def calculate_residual(X, grad=False):
         n = X.shape[0]
         x = np.arange(n)
         y = X[:, 0]
-        a = ((x - np.mean(x)).dot(y - np.mean(y)) / n) / np.var(x)
+        #a = ((x - np.mean(x)).dot(y - np.mean(y)) / n) / np.var(x)
+        # print('a')
+        # print(a)
+        a = (x.dot(y) / n - np.mean(x) * np.mean(y)) / np.var(x)
+        # ((x - np.mean(x)).dot(y - np.mean(y)) / n) / np.var(x)
+        # print('a_hat')
+        # print(a_hat)
+
         b = np.mean(y) - a * np.mean(x)
         y = y.reshape((n, 1))
         x = x.reshape((n, 1))
@@ -219,7 +243,6 @@ def calculate_residual(X, grad=False):
             return res
         else:
             return res, a
-
 
 def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=None):
     """
@@ -237,6 +260,9 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
     returns:
         Scores for 0th D-MDL, 1st D-DML, 2nd D-MDL, indice of alarms for 0th D-MDL, 1st D-MDL, 2nd D-MDL
     """
+
+    least_datapoints=5
+
     Xmat = np.matrix(X)
     n, m = Xmat.shape
     if n == 1:
@@ -266,21 +292,23 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
         alarm_1 = 0
         alarm_2 = 0
 
+        #print(calculate_threshold(delta=delta, d=d, nn=n - 5, alpha=alpha, n=n, order=0, complexity=complexity))
+
         # calculate 0th MDL change statistics at each time point
-        for cut in range(1, n):
+        for cut in range(least_datapoints, n-(least_datapoints-1)):
             L_total = lossfunc(Xmat, sum_x[n - 1], sum_xxT[n - 1])
             L_1 = lossfunc(Xmat[:cut], sum_x[cut - 1], sum_xxT[cut - 1])
             L_2 = lossfunc(Xmat[cut:], sum_x[n - 1] -
                            sum_x[cut - 1], sum_xxT[n - 1] - sum_xxT[cut - 1])
-            if L_total - (L_1 + L_2) > calculate_threshold(delta=delta, d=d, nn=n - 1, alpha=alpha, n=n, order=0, complexity=complexity):
+            if L_total - (L_1 + L_2) > calculate_threshold(delta=delta, d=d, nn=n - (least_datapoints*2-1), alpha=alpha, n=n, order=0, complexity=complexity):
                 alarm_0 = 1
             MDL_0[cut - 1] = L_total - (L_1 + L_2)
 
         # calculate 1st MDL change statistics at each time point
-        if n < 3:
+        if n < 2*least_datapoints+1:
             MDL_1 = np.nan
         else:
-            for cut in range(1, n - 1):
+            for cut in range(least_datapoints, n - least_datapoints):
                 L_first = lossfunc(Xmat[:cut], sum_x[cut - 1], sum_xxT[cut - 1]) + \
                     lossfunc(Xmat[cut:], sum_x[n - 1] - sum_x[cut - 1],
                              sum_xxT[n - 1] - sum_xxT[cut - 1])
@@ -288,16 +316,16 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
                     lossfunc(Xmat[cut + 1:], sum_x[n - 1] - sum_x[cut],
                              sum_xxT[n - 1] - sum_xxT[cut])
                 stat_1 = L_first - L_second
-                if stat_1 > calculate_threshold(delta=delta, d=d, nn=n - 2, alpha=alpha, n=n, order=1, complexity=complexity):
+                if stat_1 > calculate_threshold(delta=delta, d=d, nn=n - least_datapoints*2, alpha=alpha, n=n, order=1, complexity=complexity):
                     alarm_1 = 1
                 if stat_1 > MDL_1:
                     MDL_1 = stat_1
 
         # calculate 2nd MDL change statistics at each time point
-        if n < 4:
+        if n < 2*least_datapoints+2:
             MDL_2 = np.nan
         else:
-            for cut in range(2, n - 1):
+            for cut in range(least_datapoints+1, n - least_datapoints):
                 # algebric view
                 L_t = lossfunc(Xmat[:cut], sum_x[cut - 1], sum_xxT[cut - 1]) + \
                     lossfunc(Xmat[cut:], sum_x[n - 1] - sum_x[cut - 1],
@@ -310,7 +338,7 @@ def _mdlcstat_adwin(lossfunc, X, d, alpha, delta, preprocess=False, complexity=N
                              sum_xxT[n - 1] - sum_xxT[cut - 2])
 
                 stat_2 = 2 * L_t - (L_tp + L_tm)
-                if stat_2 > calculate_threshold(delta=delta, d=d, nn=n - 3, alpha=alpha, n=n, order=2, complexity=complexity):
+                if stat_2 > calculate_threshold(delta=delta, d=d, nn=n - (least_datapoints*2+1), alpha=alpha, n=n, order=2, complexity=complexity):
                     alarm_2 = 1
                 if stat_2 > MDL_2:
                     MDL_2 = stat_2
@@ -419,6 +447,31 @@ def multigamma_ln(a, d):
     return special.multigammaln(a, d)
 
 
+def nml_regression(X, sum_x, sum_xxT, R=1, var_min=1e-12):
+    Xmat = np.matrix(X)
+
+    n = Xmat.shape[0]
+    if n <= 0:
+        return np.nan
+
+    W = np.ones((2, n))
+    W[1, :] = np.arange(1, n + 1)
+
+    beta = sl.pinv(W.dot(W.T)).dot(W).dot(X)
+    Xc = Xmat - W.T.dot(beta)
+    var = float(Xc.T * Xc / n)
+
+    eps=1e-12
+    var=max(var, eps)
+
+    return n * np.log(var)/2 + np.log(R / var_min) - special.gammaln(n / 2 - 1) + n * np.log(n * np.pi) / 2
+
+
+def complexity_regression(h, R=1, var_min=1e-12):
+
+    return h / 2 * np.log(h / (2 * np.e)) + np.log(R / var_min) + special.gammaln(h / 2 - 1)
+
+
 def lnml_gaussian(X, sum_x, sum_xxT, sigma_given=1):
     """
     Calculate LNML code length of Gaussian distribution. See the paper below:
@@ -444,8 +497,11 @@ def lnml_gaussian(X, sum_x, sum_xxT, sigma_given=1):
     S = (sum_xxT + nu * sigma ** 2 * np.matrix(np.identity(m))) / \
         (n + nu) - mu.T.dot(mu)
     detS = sl.det(S)
+    # log_lnml = m / 2 * ((nu + 1) * np.log(nu) - n * np.log(np.pi) - (n + nu + 1) * np.log(n + nu)) + multigammaln(
+    #    (n + nu) / 2, m) - multigammaln(nu / 2, m) + m * nu * np.log(sigma) - (n + nu) / 2 * np.log(detS)+ 0.5*np.log(n)
     log_lnml = m / 2 * ((nu + 1) * np.log(nu) - n * np.log(np.pi) - (n + nu + 1) * np.log(n + nu)) + multigammaln(
         (n + nu) / 2, m) - multigammaln(nu / 2, m) + m * nu * np.log(sigma) - (n + nu) / 2 * np.log(detS)
+
     return -1 * log_lnml
 
 
@@ -467,8 +523,12 @@ def complexity_lnml_gaussian(h, m, sigma_given=1):
     n = h
     nu = m  # given
     sigma = sigma_given  # given
+    # log_C = -m * nu * np.log(sigma) + multigammaln(nu / 2, m) - multigammaln((nu + n) / 2, m) + 0.5 * m * (n + nu + 1) * np.log(
+    # nu + n) - 0.5 * m * (n + nu) * np.log(2) - 0.5 * m * (n + nu) - 0.5 * m
+    # * nu * np.log(np.pi) - 0.5 * m * (nu + 1) * np.log(nu) + 0.5*np.log(n)
     log_C = -m * nu * np.log(sigma) + multigammaln(nu / 2, m) - multigammaln((nu + n) / 2, m) + 0.5 * m * (n + nu + 1) * np.log(
         nu + n) - 0.5 * m * (n + nu) * np.log(2) - 0.5 * m * (n + nu) - 0.5 * m * nu * np.log(np.pi) - 0.5 * m * (nu + 1) * np.log(nu)
+
     return log_C
 
 

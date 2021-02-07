@@ -16,7 +16,7 @@ https://ibarakikenyukishi.github.io/d-mdl-html/index.html
 1. Download the data from the link below:
 https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 
-2. Rename the file to `covid_data.csv` and put it in `./data/covid_data.csv`.
+2. Rename the file to `COVID-19-geographic-disbtribution-worldwide-2020-12-14.xlsx` and put it in `./data/COVID-19-geographic-disbtribution-worldwide-2020-12-14.xlsx`.
 
 ### RUN
 - Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Exponential.ipynb` for the exponential modeling
@@ -24,8 +24,8 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 - Run the jupyter file at `./jupyter/synthetic/synthetic_{abrupt,gradual}_{mean,variance}.ipynb` for the synthetic datasets
 
 ## 4. Author & Mail address
-- Ryo Yuki (ryo_yuki@mist.i.u-tokyo.ac.jp)
-- Linchuan Xu (linchuan_xu@mist.i.u-tokyo.ac.jp)
+- Ryo Yuki (jie-cheng-ling@g.ecc.u-tokyo.ac.jp)
+- Linchuan Xu (linchxu@comp.polyu.edu.hk)
 - Shintaro Fukushima (shintaro_fukushima@mist.i.u-tokyo.ac.jp)
 
 ## 5. Requirements & License
@@ -37,10 +37,10 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 This code is licensed under MIT License.
 
 ## 6. Note
-For the calculation of the code length in the exponential modeling, we used the conditional normalized maximum likelihood (CNML) code length of Gaussian distributions [2,3,4] for residual errors.
+The results of Gaussian and exponential modeling changed a little bit from the paper because of the updates of the data source.
+
+The NML code length of exponential modeling was calculated with the example 3 in [2].
 
 ## 7. Reference
 1. Yamanishi, K., Xu, L., Yuki, R., Fukushima, S., & Lin, C. H. (2020). Change Sign Detection with Differential MDL Change Statistics and its Applications to COVID-19 Pandemic Analysis. arXiv preprint arXiv:2007.15179.
-2. Grünwald, P. D., & Grunwald, A. (2007). The minimum description length principle. MIT press.
-3. Miyaguchi, K. (2017). Normalized Maximum Likelihood with Luckiness for Multivariate Normal Distributions. arXiv preprint arXiv:1708.01861.
-4. Kaneko, R., Miyaguchi, K., & Yamanishi, K. (2017, December). Detecting changes in streaming data with information-theoretic windowing. In 2017 IEEE International Conference on Big Data (Big Data) (pp. 646-655). IEEE.
+2. Yamanishi, Kenji, and Kohei Miyaguchi. "Detecting gradual changes from data stream using MDL-change statistics." 2016 IEEE International Conference on Big Data (Big Data). IEEE, 2016.
