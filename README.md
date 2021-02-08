@@ -13,10 +13,10 @@ https://ibarakikenyukishi.github.io/d-mdl-html/index.html
 
 ## 3. How to Run
 ### Data Preparation
-1. Download the data from the link below:
+1. Download the data in xlsx format from the link below:
 https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 
-2. Rename the file to `COVID-19-geographic-disbtribution-worldwide-2020-12-14.xlsx` and put it in `./data/COVID-19-geographic-disbtribution-worldwide-2020-12-14.xlsx`.
+2. Rename the file to `covid_data.xlsx` and put it in `./data/covid_data.xlsx`.
 
 ### RUN
 - Run the jupyter file at `./jupyter/symptom/D-MDL_SCAW_Exponential.ipynb` for the exponential modeling
@@ -37,10 +37,10 @@ https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-
 This code is licensed under MIT License.
 
 ## 6. Note
-The results of Gaussian and exponential modeling changed a little bit from the paper because of the updates of the data source.
+The results of Gaussian and exponential modeling changed may be slightly different from those in the paper because the dataset of past dates was updated day-by-day.
 
 The NML code length of exponential modeling was calculated with the example 3 in [2].
 
 ## 7. Reference
 1. Yamanishi, K., Xu, L., Yuki, R., Fukushima, S., & Lin, C. H. (2020). Change Sign Detection with Differential MDL Change Statistics and its Applications to COVID-19 Pandemic Analysis. arXiv preprint arXiv:2007.15179.
-2. Yamanishi, Kenji, and Kohei Miyaguchi. "Detecting gradual changes from data stream using MDL-change statistics." 2016 IEEE International Conference on Big Data (Big Data). IEEE, 2016.
+2. Yamanishi, K., & Miyaguchi, K. (2016, December). Detecting gradual changes from data stream using MDL-change statistics. In 2016 IEEE International Conference on Big Data (Big Data) (pp. 156-163). IEEE.
