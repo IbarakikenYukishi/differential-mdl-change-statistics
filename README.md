@@ -42,7 +42,7 @@ The results of Gaussian and exponential modeling changed may be slightly differe
 The NML code length of exponential modeling was calculated with the example 3 in [2].
 
 ## 7. Modification of Algorithm 2
-Algorithm 2 states that when a change is detected, it drops the data ealier than the time point in which 0th D-MDL is maximized. However, according to the study [3], all of the content should be dropped so that the total number of false alarms is finite (i.e., asymptotic reliability). Therefore, we modify Algorithm 2 as follows:
+Algorithm 2 states that when a change is detected, it drops the data earlier than the time point in which 0th D-MDL is maximized. However, according to the study [3], all of the content should be dropped so that the total number of false alarms is finite (i.e., asymptotic reliability). Therefore, we modify Algorithm 2 as follows:
 ![modification](modification.png)
 
 ## 8. Reference
