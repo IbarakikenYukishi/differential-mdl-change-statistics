@@ -43,6 +43,7 @@ The NML code length of exponential modeling was calculated with the example 3 in
 
 ## 7. Modification of Algorithm 2
 Algorithm 2 states that when a change is detected, it drops the data earlier than the time point in which 0th D-MDL is maximized. In our implementation we employ a variant of Algorithm 2 so that all of the content should be dropped.
+
 ![modification](modification.png)
 
 ## 8. Reference
