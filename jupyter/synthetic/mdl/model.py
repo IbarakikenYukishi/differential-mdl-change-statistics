@@ -188,7 +188,7 @@ class Norm1D(Model):
         change_statistic = 0.5 * np.log(sigma0**2/(sigma1 * sigma2)) + \
                            (self._log_NML_normalizer(window, mu_max, sigma_min) 
                              -self._log_NML_normalizer(t, mu_max, sigma_min) -self._log_NML_normalizer(window-t, mu_max, sigma_min)
-                           )
+                           ) / (2.0 * window)
        
         return change_statistic
     
