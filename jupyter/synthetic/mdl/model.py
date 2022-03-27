@@ -252,7 +252,6 @@ class LinearRegression(Model):
         super().__init__()
 
     def calc_change_score(self, x, h, sigma_min=1.0, R=10.0):
-        h = self.h
         sigma0 = np.std(x)
         sigma1 = np.std(x[:h])
         sigma2 = np.std(x[h:])
