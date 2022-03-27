@@ -48,7 +48,7 @@ class Norm(Model):
                m*k/2.0*(np.log(k/2) - 1.0) - gammaln(m/2) - gammaln_m((k-1)/2, m)
                #m*k/2.0*(np.log(k/2) - 1.0) - gammaln(m/2) - gammaln((k-1)/2)
 
-    def calc_change_score(self, x, h, window, mu_max, sigma_min):
+    def calc_change_score(self, x, h, mu_max, sigma_min):
         """
         calculate change score for a given point
         :param x: point (time points * features)
@@ -64,7 +64,6 @@ class Norm(Model):
         cor0 = np.cov(x, rowvar=False)
         cor1 = np.cov(x[:h, :], rowvar=False)
         cor2 = np.cov(x[h:, :], rowvar=False)
-        #print(np.linalg.det(cor0), np.linalg.det(cor1), np.linalg.det(cor2))
 
         cor_inv0 = np.linalg.inv(cor0)
         cor_inv1 = np.linalg.inv(cor1)
@@ -73,29 +72,8 @@ class Norm(Model):
         dim = x.shape[1]
 
         # calculate change statistic
-        #term0 = dim * h * np.log(2.0 * np.pi) + h * np.linalg.det(cor0) + \
-        #        np.sum([0.5 * (xx - mu0).reshape(1, -1).dot(cor_inv0).dot(xx - mu0) for xx in x])
-        #term0 = 1/2 * dim * np.linalg.slogdet(cor0)[1] + \
-        #        1/(2*h) * np.sum([(xx - mu0).reshape(1, -1).dot(cor_inv0).dot((xx - mu0).reshape(-1, 1)) for xx in x])
-        #term0 = 1/2 * np.linalg.slogdet(cor0)[1] + \
-        #        1/(2*h) * np.sum(-scipy.stats.multivariate_normal(mu0, cor0).logpdf(x))
-        #        #1/(2*h) * np.sum([(xx - mu0).reshape(1, -1).dot(cor_inv0).dot((xx - mu0).reshape(-1, 1)) for xx in x])
         term0 = 1/(2*h) * np.sum(-scipy.stats.multivariate_normal(mu0, cor0).logpdf(x))
-        #term1 = dim * h/2 * np.log(2.0 * np.pi) + 0.5 * h * np.linalg.det(cor1) + \
-        #        np.sum([0.5 * (xx - mu1).reshape(1, -1).dot(cor_inv1).dot(xx - mu1) for xx in x[:h, :]])
-        #term1 = 1/4 * dim * np.linalg.slogdet(cor1)[1] + \
-        #        1/(2*h) * np.sum([(xx - mu1).reshape(1, -1).dot(cor_inv1).dot((xx - mu1).reshape(-1, 1)) for xx in x[:h, :]])
-        #term1 = 1/4 * np.linalg.slogdet(cor1)[1] + \
-        #        1/(2*h) * np.sum(-scipy.stats.multivariate_normal(mu1, cor1).logpdf(x[:h, :]))
-        #        #1/(2*h) * np.sum([(xx - mu1).reshape(1, -1).dot(cor_inv1).dot((xx - mu1).reshape(-1, 1)) for xx in x[:h, :]])
         term1 = 1/(2*h) * np.sum(-scipy.stats.multivariate_normal(mu1, cor1).logpdf(x[:h, :]))
-        #term2 = dim * h/2 * np.log(2.0 * np.pi) + 0.5 * h * np.linalg.det(cor2) + \
-        #        np.sum([0.5 * (xx - mu2).reshape(1, -1).dot(cor_inv2).dot(xx - mu2) for xx in x[h:, :]])
-        #term2 = 1/4 * dim * np.linalg.slogdet(cor2)[1] + \
-        #        1/(2*h) * np.sum([(xx - mu2).reshape(1, -1).dot(cor_inv2).dot((xx - mu2).reshape(-1, 1)) for xx in x[h:, :]])
-        #term2 = 1/4 * np.linalg.slogdet(cor2)[1] + \
-        #        1/(2*h) * np.sum(-scipy.stats.multivariate_normal(mu2, cor2).logpdf(x[h:, :]))
-        #        #1/(2*h) * np.sum([(xx - mu2).reshape(1, -1).dot(cor_inv2).dot((xx - mu2).reshape(-1, 1)) for xx in x[h:, :]])
         term2 = 1/(2*h) * np.sum(-scipy.stats.multivariate_normal(mu2, cor2).logpdf(x[h:, :]))
         change_statistic = term0 - term1 - term2 + \
                            1.0/(2*h) * self._log_NML_normalizer(2*h, dim, mu_max, sigma_min) - \
