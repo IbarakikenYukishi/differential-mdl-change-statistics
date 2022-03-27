@@ -170,7 +170,7 @@ class Norm1D(Model):
         return 0.5 * np.log(16 * np.abs(mu_max) / (np.pi * sigma_min**2)) + \
                k/2 * np.log(k/2) - k/2 - gammaln((k-1)/2)
 
-    def calc_change_score(self, x, t, mu_max, sigma_min):
+    def calc_change_score(self, x, h, mu_max, sigma_min):
         """
         calculate change score for a given point
         :param x: point
@@ -181,8 +181,8 @@ class Norm1D(Model):
         window = len(x)
         
         sigma0 = np.std(x)
-        sigma1 = np.std(x[:t])
-        sigma2 = np.std(x[t:])
+        sigma1 = np.std(x[:h])
+        sigma2 = np.std(x[h:])
         
         # calculate change statistic
         change_statistic = 0.5 * np.log(sigma0**2/(sigma1 * sigma2)) + \
@@ -252,6 +252,7 @@ class LinearRegression(Model):
         super().__init__()
 
     def calc_change_score(self, x, h, sigma_min=1.0, R=10.0):
+        h = self.h
         sigma0 = np.std(x)
         sigma1 = np.std(x[:h])
         sigma2 = np.std(x[h:])
